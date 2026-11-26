@@ -188,6 +188,51 @@ footer ul{list-style:none;display:grid;gap:10px}
 footer ul a:hover{text-decoration:underline}
 .copy-small{font-size:10px;color:var(--muted);margin-top:40px}
 
+/* ===== Écran d'ouverture : le nom se resserre, monte à sa place, la page apparaît ===== */
+.intro{position:fixed;inset:0;z-index:200;background:var(--paper);display:grid;place-items:center;pointer-events:none;
+  animation:introSafety .5s 5s forwards;transition:opacity .9s ease}
+.intro.out{opacity:0}
+.intro-word{font-family:var(--serif);font-size:clamp(44px,7.5vw,96px);font-weight:400;line-height:1;white-space:nowrap;
+  padding-left:.28em;letter-spacing:.28em;
+  background:var(--gold-grad);-webkit-background-clip:text;background-clip:text;color:transparent;
+  animation:wordIn 1.3s cubic-bezier(.2,.7,.2,1) both;transform-origin:center;
+  transition:transform 1s cubic-bezier(.7,0,.25,1)}
+@keyframes wordIn{from{letter-spacing:.9em;padding-left:.9em;opacity:0;filter:blur(8px)}to{letter-spacing:.28em;padding-left:.28em;opacity:1;filter:blur(0)}}
+@keyframes introSafety{to{opacity:0;visibility:hidden}}
+/* pendant l'ouverture : logo caché, haut de page blanc et flou, puis il apparaît */
+.intro-on header .logo{opacity:0}
+header .logo{transition:opacity .2s}
+.hero{transition:background-color 1.4s ease}
+.hero .photos,.hero > *:not(.photos){transition:opacity 1.4s ease,filter 1.6s ease}
+.intro-on .hero{background-color:var(--paper)}
+.intro-on .hero .photos{opacity:0;filter:blur(14px) brightness(1.4)}
+.intro-on .hero > *:not(.photos){opacity:0}
+.intro-done .hero-center{transition-delay:.5s}
+.intro-done .hero-top,.intro-done .hero-bottom{transition-delay:.8s}
+
+/* ===== Catégories ===== */
+.cats{margin:0 var(--gut);padding:56px 0 8px}
+.cats h2{font-size:clamp(26px,2.6vw,34px);margin-bottom:18px}
+.cats-row{display:grid;grid-template-columns:repeat(5,1fr);gap:10px}
+.cat{position:relative;aspect-ratio:.82;background-size:var(--z,200%);background-position:var(--p,50% 50%);overflow:hidden;color:#fff;text-align:left;display:block}
+.cat::before{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(30,22,18,0) 45%,rgba(30,22,18,.75) 100%);transition:background .4s}
+.cat:hover::before{background:linear-gradient(180deg,rgba(30,22,18,.1) 30%,rgba(30,22,18,.85) 100%)}
+.cat span{position:absolute;left:14px;right:14px;bottom:14px;font-family:var(--serif);font-weight:300;font-size:clamp(17px,1.6vw,22px);line-height:1.1;letter-spacing:-.01em;padding-bottom:8px;border-bottom:1px solid var(--gold-2)}
+.cat.active span{color:var(--gold-2)}
+
+/* ===== Étiquettes produits ===== */
+.badge{position:absolute;top:10px;left:10px;z-index:2;background:rgba(255,255,255,.92);color:var(--ink);font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;padding:5px 8px}
+
+/* ===== Pied de page sombre ===== */
+.subscribe,footer{background:#231c18;color:#efe9df}
+.subscribe{margin-top:0;border-bottom:1px solid rgba(217,184,120,.25)}
+.subscribe .loc a,footer h4,footer .brand + p{color:#b9ad9e}
+.subscribe .loc .eyebrow{color:var(--gold-2)}
+footer{position:relative;padding-bottom:0}
+footer .socials.outline a{border-color:#efe9df;color:#efe9df}
+.copy-small{color:#8d8276}
+.mega{grid-column:1/-1;font-family:var(--serif);font-weight:300;font-size:clamp(64px,19vw,270px);line-height:1;letter-spacing:.06em;text-align:center;margin:40px 0 -.12em;padding-top:.05em;background:var(--gold-grad);-webkit-background-clip:text;background-clip:text;color:transparent;user-select:none}
+
 /* ---------- Visionneuse (toutes les vues d'une robe) ---------- */
 dialog.lightbox{border:0;padding:0;background:var(--paper);width:min(940px,94vw);max-height:92vh;margin:auto;overflow:auto}
 dialog.lightbox::backdrop{background:rgba(28,23,20,.7)}
@@ -247,6 +292,13 @@ dialog.lightbox::backdrop{background:rgba(28,23,20,.7)}
   .lb{grid-template-columns:1fr}
   .lb-side{padding:24px 20px}
 }
+@media (max-width:980px){
+  .cats-row{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;margin-right:calc(var(--gut) * -1);padding-right:var(--gut)}
+  .cats-row::-webkit-scrollbar{display:none}
+  .cat{flex:0 0 38%;scroll-snap-align:start}
+  .mega{margin-top:36px}
+}
+@media (max-width:560px){.cat{flex-basis:44%}.cats{padding-top:40px}}
 @media (min-width:981px){.mobile-menu{display:none!important}}
 /* ---------- Téléphone ---------- */
 @media (max-width:560px){
@@ -279,10 +331,12 @@ dialog.lightbox::backdrop{background:rgba(28,23,20,.7)}
 .lb-specs{display:grid;grid-template-columns:auto 1fr;gap:8px 18px;font-size:12px;border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:14px 0}
 .lb-specs dt{color:var(--gold);letter-spacing:.06em;text-transform:uppercase;font-size:10px;padding-top:2px}
 .lb-specs dd{color:var(--ink)}
-@media (prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important;animation:none!important}.js .reveal{opacity:1;transform:none}.hero .photos img:first-child{opacity:1}}
+@media (prefers-reduced-motion:reduce){.intro{display:none}*{transition:none!important;scroll-behavior:auto!important;animation:none!important}.js .reveal{opacity:1;transform:none}.hero .photos img:first-child{opacity:1}}
 </style>
 </head>
 <body>
+<div class="intro" aria-hidden="true"><div class="intro-word">DORIGA</div></div>
+<noscript><style>.js .reveal{opacity:1;transform:none}</style></noscript>
 <div class="page">
 
   <header>
@@ -335,6 +389,17 @@ dialog.lightbox::backdrop{background:rgba(28,23,20,.7)}
   </section>
 
   <!-- DERNIÈRE COLLECTION — 4 robes. Une carte = une robe ; ses photos = ses vues. -->
+  <section class="cats reveal" aria-labelledby="catsTitle">
+    <h2 class="serif" id="catsTitle">Catégories</h2>
+    <div class="cats-row">
+      <button class="cat" data-q="brode" style="background-image:url(img/robe-rouge-face.jpg);--p:52% 30%;--z:260%"><span>Broderie</span></button>
+      <button class="cat" data-q="peint" style="background-image:url(img/robe-rose-dos.jpg);--p:30% 95%;--z:230%"><span>Peint à la main</span></button>
+      <button class="cat" data-q="boubou" style="background-image:url(img/robe-jaune-face.jpg);--p:50% 20%;--z:120%"><span>Boubous</span></button>
+      <button class="cat" data-q="bazin" style="background-image:url(img/robe-brodee-face.jpg);--p:30% 40%;--z:240%"><span>Bazin riche</span></button>
+      <a class="cat" href="#sur-mesure" style="background-image:url(img/robe-peche-face.jpg);--p:40% 15%;--z:260%"><span>Sur mesure</span></a>
+    </div>
+  </section>
+
   <div class="reveal section-head" id="collection">
     <h2 class="serif">Dernière collection</h2>
     <div class="filters">Filtrer par :
@@ -356,6 +421,7 @@ dialog.lightbox::backdrop{background:rgba(28,23,20,.7)}
       data-views="img/robe-rose-face.jpg|Face,img/robe-rose-face-pose.jpg|Pose,img/robe-rose-dos.jpg|Dos">
       <img loading="lazy" width="1200" height="1600" src="img/robe-rose-face.jpg" alt="Robe rose poudré peinte à la main, vue de face">
       <img loading="lazy" width="1200" height="1600" src="img/robe-rose-dos.jpg" alt="Robe rose poudré peinte à la main, vue de dos">
+      <span class="badge">Peint main</span>
       <span class="label"><span>Robe rose peinte</span><i class="arrow" aria-hidden="true"></i></span>
     </article>
     <article class="product reveal" id="robe-brodee" data-fabric="Bazin riche caramel" data-tech="Broderie" tabindex="0"
@@ -365,6 +431,7 @@ dialog.lightbox::backdrop{background:rgba(28,23,20,.7)}
       data-views="img/robe-brodee-face.jpg|Face,img/robe-brodee-pose.jpg|Pose">
       <img loading="lazy" width="1200" height="1600" src="img/robe-brodee-face.jpg" alt="Robe en bazin caramel brodée, vue de face">
       <img loading="lazy" width="1200" height="1600" src="img/robe-brodee-pose.jpg" alt="Robe en bazin caramel brodée, autre pose">
+      <span class="badge">Brodé</span>
       <span class="label"><span>Bazin brodé caramel</span><i class="arrow" aria-hidden="true"></i></span>
     </article>
     <article class="product reveal" id="robe-peche" data-fabric="Bazin pêche" data-tech="Broderie géométrique" tabindex="0"
@@ -373,24 +440,27 @@ dialog.lightbox::backdrop{background:rgba(28,23,20,.7)}
       data-desc="Bazin pêche, broderies géométriques bordeaux et rouges du col à l’ourlet, buste plissé et manches évasées."
       data-views="img/robe-peche-face.jpg|Face">
       <img loading="lazy" width="1200" height="1600" src="img/robe-peche-face.jpg" alt="Robe en bazin pêche brodée bordeaux, manches évasées">
+      <span class="badge">Brodé</span>
       <span class="label"><span>Bazin pêche brodé</span><i class="arrow" aria-hidden="true"></i></span>
     </article>
     <article class="product reveal" id="robe-jaune" data-fabric="Bazin riche jaune" data-tech="Peinture à la main, strass" tabindex="0"
-      data-type="pret mesure" data-occasion="ceremonie mariage" data-tissu="peint bazin"
+      data-type="pret mesure" data-occasion="ceremonie mariage" data-tissu="peint"
       data-keywords="jaune boubou bazin fleurs bleues bleu peint main foulard"
       data-desc="Grand boubou en bazin jaune, grandes fleurs bleues peintes à la main et rehaussées de strass, avec son foulard assorti."
       data-views="img/robe-jaune-face.jpg|Face">
       <img loading="lazy" width="1200" height="1600" src="img/robe-jaune-face.jpg" alt="Boubou en bazin jaune aux fleurs bleues peintes à la main">
+      <span class="badge">Peint main</span>
       <span class="label"><span>Boubou jaune fleuri</span><i class="arrow" aria-hidden="true"></i></span>
     </article>
     <article class="product reveal" id="robe-bleue" data-fabric="Bazin riche bleu nuit" data-tech="Peinture à la main, strass" tabindex="0"
-      data-type="pret mesure" data-occasion="ceremonie mariage" data-tissu="peint bazin"
+      data-type="pret mesure" data-occasion="ceremonie mariage" data-tissu="peint"
       data-keywords="bleu nuit marine boubou bazin feuilles feuillage dore or peint main"
       data-desc="Grand boubou en bazin bleu nuit, feuillage doré peint à la main du col à l’ourlet, avec son foulard assorti."
       data-views="img/robe-bleue-face.jpg|Face,img/robe-bleue-pose.jpg|Pose">
       <div class="todo">Robe 3<br>photo à venir</div>
       <img width="1200" height="1600" src="img/robe-bleue-face.jpg" alt="Boubou en bazin bleu nuit à feuillage doré peint à la main, vue de face">
       <img loading="lazy" width="1200" height="1600" src="img/robe-bleue-pose.jpg" alt="Boubou en bazin bleu nuit à feuillage doré, autre pose">
+      <span class="badge">Peint main</span>
       <span class="label"><span>Boubou bleu nuit doré</span><i class="arrow" aria-hidden="true"></i></span>
     </article>
     <article class="product reveal" id="robe-rouge" data-fabric="Bazin rouge" data-tech="Broderie perlée" tabindex="0"
@@ -401,6 +471,7 @@ dialog.lightbox::backdrop{background:rgba(28,23,20,.7)}
       <div class="todo">Robe 4<br>photo à venir</div>
       <img width="1200" height="1600" src="img/robe-rouge-face.jpg" alt="Robe en bazin rouge brodée de roses, vue de face">
       <img loading="lazy" width="1200" height="1600" src="img/robe-rouge-pose.jpg" alt="Robe en bazin rouge brodée de roses, autre pose">
+      <span class="badge">Brodé perlé</span>
       <span class="label"><span>Bazin rouge aux roses</span><i class="arrow" aria-hidden="true"></i></span>
     </article>
     <p class="no-result" id="noResult" hidden>Aucune robe ne correspond. Appelez-nous au <a href="tel:+221778778717">+221 77 877 87 17</a> : nous réalisons aussi sur mesure.</p>
@@ -489,6 +560,7 @@ dialog.lightbox::backdrop{background:rgba(28,23,20,.7)}
     <div><h4>Service client</h4><ul><li><a href="tel:+221778778717">Appeler</a></li><li><a href="tel:+221778778717">Commander</a></li><li><a href="#contact">Expédition mondiale</a></li><li><a href="https://www.google.com/maps/search/?api=1&amp;query=Sicap+Baobab+Libert%C3%A9+1+BRT+Dakar" target="_blank" rel="noopener noreferrer">Nous trouver</a></li></ul></div>
     <div><h4>La maison</h4><ul><li><a href="#robe-rose">Robe rose peinte</a></li><li><a href="#robe-brodee">Bazin brodé caramel</a></li><li><a href="#robe-peche">Bazin pêche brodé</a></li><li><a href="#robe-jaune">Boubou jaune fleuri</a></li><li><a href="#robe-rouge">Bazin rouge aux roses</a></li><li><a href="#sur-mesure">Prêt-à-porter</a></li></ul></div>
     <div><h4>Suivez-nous</h4><ul><li><a href="https://www.facebook.com/share/19oHPuZgLA/?mibextid=wwXIfr" target="_blank" rel="noopener noreferrer">Facebook</a></li><li><a href="https://www.youtube.com/@dorigacollection" target="_blank" rel="noopener noreferrer">YouTube</a></li></ul></div>
+    <p class="mega" aria-hidden="true">DORIGA</p>
   </footer>
 </div>
 

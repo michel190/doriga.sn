@@ -1,4 +1,23 @@
 document.documentElement.classList.add('js');
+
+/* ===== Écran d'ouverture ===== */
+(() => {
+  const intro = document.querySelector('.intro'), root = document.documentElement;
+  if (!intro) return;
+  if (matchMedia('(prefers-reduced-motion: reduce)').matches) { intro.remove(); return; }
+  root.classList.add('intro-on');
+  const word = intro.querySelector('.intro-word'), logo = document.querySelector('header .logo');
+  setTimeout(() => {               // 2. le nom monte à la place du logo
+    const a = word.getBoundingClientRect(), b = logo.getBoundingClientRect();
+    const k = parseFloat(getComputedStyle(logo).fontSize) / parseFloat(getComputedStyle(word).fontSize);
+    word.style.transform = `translate(${b.left + b.width / 2 - (a.left + a.width / 2)}px, ${b.top + b.height / 2 - (a.top + a.height / 2)}px) scale(${k})`;
+  }, 1450);
+  setTimeout(() => {               // 3. le voile s'efface, la page apparaît
+    root.classList.remove('intro-on'); root.classList.add('intro-done');
+    intro.classList.add('out');
+  }, 2500);
+  setTimeout(() => intro.remove(), 3500);
+})();
 const $ = id => document.getElementById(id);
 const norm = s => s.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '');
 
@@ -195,3 +214,14 @@ const io = 'IntersectionObserver' in window ? new IntersectionObserver(es => es.
   if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); }
 }), { rootMargin: '0px 0px -8% 0px', threshold: 0.08 }) : null;
 document.querySelectorAll('.reveal').forEach(el => io ? io.observe(el) : el.classList.add('in'));
+
+/* catégories : filtrent la collection */
+document.querySelectorAll('.cat[data-q]').forEach(cat => cat.addEventListener('click', () => {
+  const on = !cat.classList.contains('active');
+  document.querySelectorAll('.cat').forEach(c => c.classList.remove('active'));
+  query = on ? cat.dataset.q : '';
+  if (on) cat.classList.add('active');
+  apply();
+  $('collection').scrollIntoView({ behavior: 'smooth' });
+}));
+exploreBtn.addEventListener('click', () => document.querySelectorAll('.cat').forEach(c => c.classList.remove('active')));
